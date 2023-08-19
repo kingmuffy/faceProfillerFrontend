@@ -35,7 +35,17 @@ export const Uploader = () => {
   };
 
   const handleFileChange = (e) => {
-    setFiles(e.target.files);
+    const selectedFiles = e.target.files;
+    const maxFileSize = 1024 * 1024; // 1MB
+
+    for (const file of selectedFiles) {
+      if (file.size > maxFileSize) {
+        alert("File size should not exceed 1MB");
+        return; // or you can continue to allow other valid files
+      }
+    }
+
+    setFiles(selectedFiles);
   };
 
   return (

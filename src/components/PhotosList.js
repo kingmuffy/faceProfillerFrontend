@@ -2,13 +2,24 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { fetchPhotos } from '../api/photo';
 
+import { ThreeDots } from  'react-loader-spinner';
+
 const PhotosList = () => {
   const { data: photos, isLoading, isError } = useQuery('photos', fetchPhotos, {
 
   });
 
   if (isLoading) {
-    return <div className="text-lg font-semibold">Loading...</div>;
+    return <div className="flex justify-center mt-10"> <ThreeDots 
+    height="80" 
+    width="80" 
+    radius="9"
+    color="#4fa94d" 
+    ariaLabel="three-dots-loading"
+    wrapperStyle={{}}
+    wrapperClassName=""
+    visible={true}
+     /> </div>;
   }
 
   if (isError || !Array.isArray(photos)) {
