@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 import { uploadAndIndexPhoto, recognizeFaces } from '../api/photo';
+import PhotoCard from './PhotoCard';
 
 export const Uploader = () => {
   const [comment, setComment] = useState('');
@@ -120,13 +121,12 @@ export const Uploader = () => {
         <h2 className="text-lg font-semibold">Recognized Faces</h2>
         {recognizedFaces.map((face, index) => (
           face ? (
-            <div key={index} className="flex items-center space-x-4">
-              <img src={face.imageUrl} alt="Recognized Face" className="w-16 h-16 rounded-md" />
-              <div>
-                <p>Comment: {face.comments.join(', ')}</p>
-                <p>Poster Name: {face.posterName}</p>
-              </div>
-            </div>
+            <PhotoCard
+              key={index}
+              imageUrl={face.imageUrl}
+              comments={face.comments.join(', ')}
+              posterName={face.posterName}
+            />
           ) : (
             <p key={index}>No face matched</p>
           )
