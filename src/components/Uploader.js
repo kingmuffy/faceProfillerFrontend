@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useMutation } from 'react-query';
+import { toast } from 'react-toastify';
 import { uploadAndIndexPhoto, recognizeFaces } from '../api/photo';
 
 export const Uploader = () => {
@@ -7,16 +8,43 @@ export const Uploader = () => {
   const [posterName, setPosterName] = useState('');
   const [files, setFiles] = useState(null);
   const [recognizedFaces, setRecognizedFaces] = useState([]);
+  const fileInputRef = useRef(); // Added ref for file input
+
+  const resetFields = () => {
+    setComment('');
+    setPosterName('');
+    setFiles(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Clear file input value
+    }
+  };
 
   const uploadMutation = useMutation(uploadAndIndexPhoto, {
-    onSuccess(data) {
+    onMutate: () => {
+      toast.info('Uploading...');
+    },
+    onSuccess: (data) => {
       console.log('Upload result:', data);
+      toast.success('File uploaded successfully!');
+      resetFields(); // Reset fields on success
+    },
+    onError: () => {
+      toast.error('Failed to upload the file');
+      resetFields(); // Reset fields on error
     },
   });
 
   const recognizeMutation = useMutation(recognizeFaces, {
-    onSuccess(data) {
+    onMutate: () => {
+      toast.info('Recognizing faces...');
+    },
+    onSuccess: (data) => {
       setRecognizedFaces(data.faces || []);
+      toast.success('Faces recognized successfully!');
+    },
+    onError: () => {
+      toast.error('Failed to recognize faces');
+      resetFields(); // Reset fields on error
     },
   });
 
@@ -40,19 +68,19 @@ export const Uploader = () => {
 
     for (const file of selectedFiles) {
       if (file.size > maxFileSize) {
-        alert("File size should not exceed 1MB");
-        return; // or you can continue to allow other valid files
+        toast.error('File size should not exceed 1MB'); // Using toast for file size error
+        return;
       }
     }
 
     setFiles(selectedFiles);
   };
-
   return (
     <div className="bg-white p-8 shadow-lg rounded-md space-y-4">
       <form className="space-y-4">
         <p className="text-lg font-semibold">Upload Files</p>
         <input
+          ref={fileInputRef} // Added ref
           type="file"
           multiple
           onChange={handleFileChange}
