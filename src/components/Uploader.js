@@ -7,16 +7,18 @@ import PhotoCard from './PhotoCard';
 export const Uploader = () => {
   const [comment, setComment] = useState('');
   const [posterName, setPosterName] = useState('');
+  const [topic, setTopic] = useState('');
   const [files, setFiles] = useState(null);
   const [recognizedFaces, setRecognizedFaces] = useState([]);
-  const fileInputRef = useRef(); // Added ref for file input
+  const fileInputRef = useRef();
 
   const resetFields = () => {
     setComment('');
     setPosterName('');
+    setTopic('');
     setFiles(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Clear file input value
+      fileInputRef.current.value = '';
     }
   };
 
@@ -25,13 +27,12 @@ export const Uploader = () => {
       toast.info('Uploading...');
     },
     onSuccess: (data) => {
-      console.log('Upload result:', data);
       toast.success('File uploaded successfully!');
-      resetFields(); // Reset fields on success
+      resetFields();
     },
     onError: () => {
       toast.error('Failed to upload the file');
-      resetFields(); // Reset fields on error
+      resetFields();
     },
   });
 
@@ -45,7 +46,7 @@ export const Uploader = () => {
     },
     onError: () => {
       toast.error('Failed to recognize faces');
-      resetFields(); // Reset fields on error
+      resetFields();
     },
   });
 
@@ -54,6 +55,7 @@ export const Uploader = () => {
     Object.values(files).forEach((file) => formData.append('file', file));
     formData.append('comment', comment);
     formData.append('posterName', posterName);
+    formData.append('topic', topic);
     uploadMutation.mutate(formData);
   };
 
@@ -69,50 +71,29 @@ export const Uploader = () => {
 
     for (const file of selectedFiles) {
       if (file.size > maxFileSize) {
-        toast.error('File size should not exceed 1MB'); // Using toast for file size error
+        toast.error('File size should not exceed 1MB');
         return;
       }
     }
 
     setFiles(selectedFiles);
   };
+
   return (
     <div className="bg-white p-8 shadow-lg rounded-md space-y-4">
       <form className="space-y-4">
         <p className="text-lg font-semibold">Upload Files</p>
-        <input
-          ref={fileInputRef} // Added ref
-          type="file"
-          multiple
-          onChange={handleFileChange}
-          className="border p-2 rounded-md"
-        />
-        <input
-          type="text"
-          placeholder="Add a comment"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className="border p-2 w-full rounded-md"
-        />
-        <input
-          type="text"
-          placeholder="Enter your name"
-          value={posterName}
-          onChange={(e) => setPosterName(e.target.value)}
-          className="border p-2 w-full rounded-md"
-        />
+        <input ref={fileInputRef} type="file" multiple onChange={handleFileChange} className="border p-2 rounded-md" />
+        <input type="text" placeholder="Add a comment" value={comment} onChange={(e) => setComment(e.target.value)} className="border p-2 w-full rounded-md" />
+        <input type="text" placeholder="Enter your name" value={posterName} onChange={(e) => setPosterName(e.target.value)} className="border p-2 w-full rounded-md" />
+        <input type="text" placeholder="Enter a topic" value={topic} onChange={(e) => setTopic(e.target.value)} className="border p-2 w-full rounded-md" />
         <button type="button" onClick={handleUploadSubmit} className="bg-blue-500 text-white p-2 rounded-md w-full">
           Upload
         </button>
       </form>
       <form className="space-y-4">
         <p className="text-lg font-semibold">Search for Recognized Faces</p>
-        <input
-          type="file"
-          multiple
-          onChange={handleFileChange}
-          className="border p-2 rounded-md"
-        />
+        <input type="file" multiple onChange={handleFileChange} className="border p-2 rounded-md" />
         <button type="button" onClick={handleRecognizeSubmit} className="bg-green-500 text-white p-2 rounded-md w-full">
           Search
         </button>
@@ -121,12 +102,7 @@ export const Uploader = () => {
         <h2 className="text-lg font-semibold">Recognized Faces</h2>
         {recognizedFaces.map((face, index) => (
           face ? (
-            <PhotoCard
-              key={index}
-              imageUrl={face.imageUrl}
-              comments={face.comments.join(', ')}
-              posterName={face.posterName}
-            />
+            <PhotoCard key={index} imageUrl={face.imageUrl} comments={face.comments.join(', ')} posterName={face.posterName} />
           ) : (
             <p key={index}>No face matched</p>
           )
