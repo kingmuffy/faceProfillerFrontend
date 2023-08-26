@@ -8,7 +8,6 @@ import { ThemeProvider, useTheme } from './components/ThemeContext';
 import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient();
-
 function App() {
   const { theme } = useTheme(); // Get the theme from the context
 
@@ -22,7 +21,7 @@ function App() {
       <QueryClientProvider client={queryClient}>     
         <Header />
         <main className="container mx-auto px-4 py-8 flex-grow">
-          <Uploader />
+          <Uploader  className="mb-8"/>
           <PhotosList />
         </main>
         <Footer />
