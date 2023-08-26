@@ -1,33 +1,36 @@
 import { useState } from 'react';
+import { FaEllipsisV } from 'react-icons/fa';
 
 const PhotoCard = ({ imageUrl, topic, comments, posterName }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
   
     return (
-      <div className="group relative cursor-pointer items-center justify-center overflow-hidden transition-shadow hover:shadow-xl hover:shadow-black/30">
-        <div className="h-64 w-72"> {/* Changed the height from h-96 to h-64 */}
-          <img className="h-full w-full object-cover transition-transform duration-500 group-hover:rotate-3 group-hover:scale-125" src={imageUrl} alt="Recognized Face" />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
-        <div className="absolute inset-0 flex translate-y-[40%] flex-col items-center justify-center px-9 text-center transition-all duration-500 group-hover:translate-y-0">
-          <h1 className="font-dmserif text-3xl font-bold text-white">{topic}</h1>
-          <h2 className="font-dmserif text-xl font-bold text-white">{posterName}</h2>
-          <button className="rounded-full bg-neutral-900 py-2 px-3.5 font-com text-sm capitalize text-white shadow shadow-black/60" onClick={() => setIsModalOpen(true)}>See More</button>
-        </div>
-        {isModalOpen && (
-          <div className="fixed z-10 inset-0 overflow-y-auto bg-black bg-opacity-50">
-            <div className="flex items-center justify-center min-h-screen">
-              <div className="bg-white p-4 rounded-md shadow-md">
-                <h3>Comments</h3>
-                <p>{comments}</p>
-                <button onClick={() => setIsModalOpen(false)} className="float-right mt-2 text-red-500">Close</button>
-              </div>
+        <div className="group relative cursor-pointer overflow-hidden transition-shadow hover:shadow-xl hover:shadow-black/30 w-72">
+            <div className="h-64 w-full">
+                <img className="h-full w-full object-cover transform transition-transform duration-500 group-hover:scale-1.05" src={imageUrl} alt="Recognized Face" />
             </div>
-          </div>
-        )}
-      </div>
+            <div className="p-4 bg-white">
+                <h1 className="font-dmserif text-2xl font-bold mb-2">{topic}</h1>
+                <h2 className="font-dmserif text-xl font-medium text-gray-600 mb-4">{posterName}</h2>
+                
+                <hr className="border-t border-gray-200 group-hover:border-blue-500 group-hover:border-opacity-50 my-4 transition-colors duration-300" />
+
+                <div className="relative group-hover:opacity-100 opacity-100 transition-opacity duration-300" onClick={() => setIsModalOpen(true)}>
+                    <span className="absolute inset-0 flex items-center justify-center text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">See More</span>
+                    <FaEllipsisV size={20} className="z-10 text-gray-700" />
+                </div>
+            </div>
+            {isModalOpen && (
+                <div className="fixed z-10 inset-0 overflow-y-auto bg-black bg-opacity-70 flex items-center justify-center">
+                    <div className="bg-white p-8 rounded-lg shadow-xl w-1/2 max-w-lg">
+                        <h3 className="font-semibold text-xl mb-4 border-b pb-2">Comments</h3>
+                        <p className="mb-4">{comments}</p>
+                        <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700 transition-colors duration-300">Close</button>
+                    </div>
+                </div>
+            )}
+        </div>
     );
-  };
-  
+};
 
 export default PhotoCard;
